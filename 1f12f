@@ -1,0 +1,753 @@
+--// Simple Tycoon GUI
+--// LocalScript
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local othersSpot = CFrame.new(-26.8, 3.0, -606.3)
+local plrSpot = CFrame.new(-40.7, 3.0, -606.1)
+
+--==================================================
+-- TYCOON SETUP
+--==================================================
+
+local tycoonMain = workspace:WaitForChild("TycoonMain")
+local tycoons = tycoonMain:WaitForChild("Tycoons")
+
+local plrTycoonName
+
+repeat
+	plrTycoonName = player:GetAttribute("TycoonOwned")
+	task.wait(0.1)
+until plrTycoonName ~= nil
+
+print("Player Tycoon:", plrTycoonName)
+
+local tycoon = tycoons:WaitForChild(plrTycoonName)
+
+--==================================================
+-- GUI
+--==================================================
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SimpleGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = playerGui
+
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Size = UDim2.new(0, 300, 0, 240)
+Main.Position = UDim2.new(0.5, -150, 0.5, -120)
+Main.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+Main.BorderSizePixel = 0
+Main.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = Main
+
+local Stroke = Instance.new("UIStroke")
+Stroke.Color = Color3.fromRGB(65, 65, 75)
+Stroke.Thickness = 1
+Stroke.Parent = Main
+
+--==================================================
+-- TITLE BAR
+--==================================================
+
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 45)
+TitleBar.BackgroundColor3 = Color3.fromRGB(32, 32, 38)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = Main
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 12)
+TitleCorner.Parent = TitleBar
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -55, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Foxscripts RED vs BLUE"
+Title.TextColor3 = Color3.fromRGB(240, 240, 240)
+Title.TextSize = 18
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TitleBar
+
+--==================================================
+-- EXIT BUTTON
+--==================================================
+
+local Exit = Instance.new("TextButton")
+Exit.Size = UDim2.new(0, 35, 0, 35)
+Exit.Position = UDim2.new(1, -40, 0, 5)
+Exit.BackgroundColor3 = Color3.fromRGB(190, 55, 55)
+Exit.Text = "×"
+Exit.TextColor3 = Color3.fromRGB(255, 255, 255)
+Exit.TextSize = 22
+Exit.Font = Enum.Font.GothamBold
+Exit.BorderSizePixel = 0
+Exit.Parent = TitleBar
+
+local ExitCorner = Instance.new("UICorner")
+ExitCorner.CornerRadius = UDim.new(0, 8)
+ExitCorner.Parent = Exit
+
+--==================================================
+-- AUTO BUY LABEL
+--==================================================
+
+local ToggleLabel = Instance.new("TextLabel")
+ToggleLabel.Size = UDim2.new(1, -30, 0, 30)
+ToggleLabel.Position = UDim2.new(0, 15, 0, 65)
+ToggleLabel.BackgroundTransparency = 1
+ToggleLabel.Text = "Auto Buy"
+ToggleLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+ToggleLabel.TextSize = 16
+ToggleLabel.Font = Enum.Font.Gotham
+ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+ToggleLabel.Parent = Main
+
+--==================================================
+-- AUTO BUY TOGGLE
+--==================================================
+
+local Toggle = Instance.new("TextButton")
+Toggle.Size = UDim2.new(0, 75, 0, 35)
+Toggle.Position = UDim2.new(1, -90, 0, 62)
+Toggle.BackgroundColor3 = Color3.fromRGB(65, 65, 70)
+Toggle.Text = "OFF"
+Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+Toggle.TextSize = 14
+Toggle.Font = Enum.Font.GothamBold
+Toggle.BorderSizePixel = 0
+Toggle.Parent = Main
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 8)
+ToggleCorner.Parent = Toggle
+
+--==================================================
+-- PRINT 1 LABEL
+--==================================================
+
+local PrintLabel = Instance.new("TextLabel")
+PrintLabel.Size = UDim2.new(1, -30, 0, 30)
+PrintLabel.Position = UDim2.new(0, 15, 0, 105)
+PrintLabel.BackgroundTransparency = 1
+PrintLabel.Text = 'Kill all players'
+PrintLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+PrintLabel.TextSize = 16
+PrintLabel.Font = Enum.Font.Gotham
+PrintLabel.TextXAlignment = Enum.TextXAlignment.Left
+PrintLabel.Parent = Main
+
+--==================================================
+-- PRINT 1 TOGGLE
+--==================================================
+
+local PrintToggle = Instance.new("TextButton")
+PrintToggle.Size = UDim2.new(0, 75, 0, 35)
+PrintToggle.Position = UDim2.new(1, -90, 0, 102)
+PrintToggle.BackgroundColor3 = Color3.fromRGB(65, 65, 70)
+PrintToggle.Text = "OFF"
+PrintToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+PrintToggle.TextSize = 14
+PrintToggle.Font = Enum.Font.GothamBold
+PrintToggle.BorderSizePixel = 0
+PrintToggle.Parent = Main
+
+local PrintToggleCorner = Instance.new("UICorner")
+PrintToggleCorner.CornerRadius = UDim.new(0, 8)
+PrintToggleCorner.Parent = PrintToggle
+
+--==================================================
+-- STATUS
+--==================================================
+
+local Status = Instance.new("TextLabel")
+Status.Size = UDim2.new(1, -30, 0, 25)
+Status.Position = UDim2.new(0, 15, 0, 150)
+Status.BackgroundTransparency = 1
+Status.Text = "Status: Idle"
+Status.TextColor3 = Color3.fromRGB(150, 150, 155)
+Status.TextSize = 13
+Status.Font = Enum.Font.Gotham
+Status.TextXAlignment = Enum.TextXAlignment.Left
+Status.Parent = Main
+
+--==================================================
+-- STATE
+--==================================================
+
+local Enabled = false
+local PrintEnabled = false
+
+--==================================================
+-- GET CURRENT TYCOON
+--==================================================
+
+local function getTycoon()
+
+	plrTycoonName = player:GetAttribute("TycoonOwned")
+
+	if not plrTycoonName then
+		warn("TycoonOwned attribute not found")
+		return nil
+	end
+
+	local currentTycoon = tycoons:WaitForChild(plrTycoonName)
+
+	return currentTycoon
+end
+
+--==================================================
+-- COLLECT MONEY
+--==================================================
+
+local function collectMoney()
+
+	if not Enabled then
+		return
+	end
+
+	Status.Text = "Status: Collecting money..."
+
+	local currentTycoon = getTycoon()
+
+	if not currentTycoon then
+		return
+	end
+
+	local essentials = currentTycoon:WaitForChild("Essentials")
+	local currencyCollector = essentials:WaitForChild("CurrencyCollector")
+	local giver = currencyCollector:WaitForChild("Giver")
+
+	local character = player.Character or player.CharacterAdded:Wait()
+	local root = character:WaitForChild("HumanoidRootPart")
+
+	print("Collecting money")
+
+	firetouchinterest(giver, root, 0)
+
+	task.wait(0.1)
+
+	firetouchinterest(giver, root, 1)
+
+	task.wait(0.2)
+end
+
+--==================================================
+-- REMOVE UNWANTED BUTTONS
+--==================================================
+
+local function removeTycoonButtons()
+
+	if not Enabled then
+		return
+	end
+
+	Status.Text = "Status: Removing unwanted pads..."
+
+	local currentTycoon = getTycoon()
+
+	if not currentTycoon then
+		return
+	end
+
+	local buttons = currentTycoon:WaitForChild("Buttons")
+
+	local buttonsToRemove = {
+		"Buy 2x Cash",
+		"Buy 3x Cash",
+		"Buy Mercenary Pack",
+		"Buy VIPDropper1",
+		"Buy VIPUpgrader1",
+		"Buy VIPDropper2",
+		"Buy VIPUpgrader2"
+	}
+
+	for _, buttonName in ipairs(buttonsToRemove) do
+
+		if not Enabled then
+			return
+		end
+
+		local button = buttons:FindFirstChild(buttonName)
+
+		if button then
+
+			print("Removing:", buttonName)
+
+			button:Destroy()
+
+		end
+
+	end
+
+	task.wait(0.2)
+end
+
+--==================================================
+-- CHECK IF BUTTON IS DROPPER / UPGRADER
+--==================================================
+
+local function isPriorityButton(touchPart)
+
+	if not touchPart then
+		return false
+	end
+
+	-- Check the part itself
+	local name = string.lower(touchPart.Name)
+
+	if string.find(name, "dropper", 1, true)
+		or string.find(name, "upgrader", 1, true) then
+
+		return true
+	end
+
+	-- Check all parents above the touch part
+	local current = touchPart.Parent
+
+	while current and current ~= workspace do
+
+		local currentName = string.lower(current.Name)
+
+		if string.find(currentName, "dropper", 1, true)
+			or string.find(currentName, "upgrader", 1, true) then
+
+			return true
+		end
+
+		current = current.Parent
+	end
+
+	return false
+end
+
+--==================================================
+-- GET BUTTONS SORTED BY PRIORITY
+--==================================================
+
+local function getSortedButtons(buttons)
+
+	local priorityButtons = {}
+	local normalButtons = {}
+
+	for _, object in ipairs(buttons:GetDescendants()) do
+
+		if object:IsA("TouchTransmitter") then
+
+			local touchPart = object.Parent
+
+			if touchPart
+				and touchPart:IsA("BasePart") then
+
+				local data = {
+					part = touchPart,
+					priority = isPriorityButton(touchPart)
+				}
+
+				if data.priority then
+					table.insert(priorityButtons, data)
+				else
+					table.insert(normalButtons, data)
+				end
+
+			end
+
+		end
+
+	end
+
+	-- Dropper / Upgrader buttons FIRST
+	for _, data in ipairs(normalButtons) do
+		table.insert(priorityButtons, data)
+	end
+
+	return priorityButtons
+end
+
+--==================================================
+-- BUY ALL BUTTONS
+--==================================================
+
+local function buyAllButtons()
+
+	if not Enabled then
+		return
+	end
+
+    local Event = game:GetService("ReplicatedStorage").TycoonEvent
+        Event:FireServer(
+            "Rebirth"
+        )
+
+	Status.Text = "Status: Buying buttons..."
+
+	local currentTycoon = getTycoon()
+
+	if not currentTycoon then
+		return
+	end
+
+	local buttons = currentTycoon:WaitForChild("Buttons")
+
+	local purchased = {}
+
+	local character = player.Character or player.CharacterAdded:Wait()
+	local root = character:WaitForChild("HumanoidRootPart")
+
+	local noNewButtons = 0
+
+	while Enabled and noNewButtons < 3 do
+
+		local foundNewButton = false
+
+		buttons = currentTycoon:WaitForChild("Buttons")
+
+		-- Get buttons with Dropper / Upgrader priority
+		local sortedButtons = getSortedButtons(buttons)
+
+		for _, data in ipairs(sortedButtons) do
+
+			if not Enabled then
+				return
+			end
+
+			local touchPart = data.part
+
+			if touchPart
+				and touchPart.Parent
+				and not purchased[touchPart] then
+
+				purchased[touchPart] = true
+				foundNewButton = true
+
+				if data.priority then
+					print("PRIORITY BUY:", touchPart:GetFullName())
+				else
+					print("Buying:", touchPart:GetFullName())
+				end
+
+				-- Refresh character/root
+				character = player.Character or player.CharacterAdded:Wait()
+				root = character:WaitForChild("HumanoidRootPart")
+
+				firetouchinterest(
+					touchPart,
+					root,
+					0
+				)
+
+				task.wait(0.1)
+
+				firetouchinterest(
+					touchPart,
+					root,
+					1
+				)
+
+				task.wait(0.3)
+
+			end
+
+		end
+
+		if foundNewButton then
+
+			noNewButtons = 0
+
+		else
+
+			noNewButtons += 1
+
+			print(
+				"No new buttons found:",
+				noNewButtons,
+				"/ 3"
+			)
+
+			task.wait(0.5)
+
+		end
+
+	end
+
+	print("Finished buying buttons")
+end
+
+--==================================================
+-- TELEPORT OTHER PLAYERS LOCALLY
+--==================================================
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local othersSpot = CFrame.new(-26.8, 3.0, -606.3)
+local localSpot = CFrame.new(0, 10, 0) -- CHANGE THIS
+
+local originalCFrame = nil
+local wasEnabled = false
+
+-- Teleport everyone EXCEPT yourself
+local function tpOthers()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            player.Character:PivotTo(othersSpot)
+        end
+    end
+end
+
+task.spawn(function()
+    while true do
+        if PrintEnabled then
+
+            -- Save your original position when toggle is first enabled
+            if not wasEnabled then
+                if LocalPlayer.Character then
+                    originalCFrame = LocalPlayer.Character:GetPivot()
+                end
+
+                wasEnabled = true
+            end
+
+            -- Teleport yourself
+            if LocalPlayer.Character then
+                LocalPlayer.Character:PivotTo(plrSpot)
+            end
+
+            -- Teleport everyone else
+            tpOthers()
+
+        elseif wasEnabled then
+
+            -- Restore your original position when disabled
+            if LocalPlayer.Character and originalCFrame then
+                LocalPlayer.Character:PivotTo(originalCFrame)
+            end
+
+            originalCFrame = nil
+            wasEnabled = false
+        end
+
+        task.wait(0.05)
+    end
+end)
+
+--==================================================
+-- MAIN AUTOMATION LOOP
+--==================================================
+
+local function startAutomation()
+
+	task.spawn(function()
+
+		while Enabled do
+
+			print("==============================")
+			print("STARTING NEW CYCLE")
+			print("==============================")
+
+			--==========================================
+			-- 1. COLLECT MONEY
+			--==========================================
+
+			collectMoney()
+
+			if not Enabled then
+				break
+			end
+
+			task.wait(0.5)
+
+			--==========================================
+			-- 2. REMOVE UNWANTED PADS
+			--==========================================
+
+			removeTycoonButtons()
+
+			if not Enabled then
+				break
+			end
+
+			task.wait(0.5)
+
+			--==========================================
+			-- 3. BUY BUTTONS
+			-- DROPPERS / UPGRADERS FIRST
+			--==========================================
+
+			buyAllButtons()
+
+			if not Enabled then
+				break
+			end
+
+			--==========================================
+			-- 4. FINISH CYCLE
+			--==========================================
+
+			Status.Text = "Status: Cycle complete"
+
+			print("==============================")
+			print("CYCLE COMPLETE")
+			print("==============================")
+
+			task.wait(1)
+
+		end
+
+		Status.Text = "Status: Idle"
+
+	end)
+
+end
+
+--==================================================
+-- AUTO BUY TOGGLE
+--==================================================
+
+Toggle.MouseButton1Click:Connect(function()
+
+	Enabled = not Enabled
+
+	if Enabled then
+
+		Toggle.Text = "ON"
+
+		Toggle.BackgroundColor3 =
+			Color3.fromRGB(55, 175, 90)
+
+		Status.Text = "Status: Starting..."
+
+		print("Automation enabled")
+
+		startAutomation()
+
+	else
+
+		Toggle.Text = "OFF"
+
+		Toggle.BackgroundColor3 =
+			Color3.fromRGB(65, 65, 70)
+
+		Status.Text = "Status: Stopping..."
+
+		print("Automation disabled")
+
+		task.wait(0.1)
+
+		Status.Text = "Status: Idle"
+
+	end
+
+end)
+
+--==================================================
+-- SPAM PRINT TOGGLE
+--==================================================
+
+PrintToggle.MouseButton1Click:Connect(function()
+
+	PrintEnabled = not PrintEnabled
+
+	if PrintEnabled then
+
+		PrintToggle.Text = "ON"
+
+		PrintToggle.BackgroundColor3 =
+			Color3.fromRGB(55, 175, 90)
+
+		print("print(\"1\") spam enabled")
+
+	else
+
+		PrintToggle.Text = "OFF"
+
+		PrintToggle.BackgroundColor3 =
+			Color3.fromRGB(65, 65, 70)
+
+		print("print(\"1\") spam disabled")
+
+	end
+
+end)
+
+--==================================================
+-- EXIT
+--==================================================
+
+Exit.MouseButton1Click:Connect(function()
+
+	Enabled = false
+	PrintEnabled = false
+
+	print("GUI closed")
+
+	ScreenGui:Destroy()
+
+end)
+
+--==================================================
+-- DRAGGING
+--==================================================
+
+local dragging = false
+local dragStart
+local startPosition
+
+local function updateDrag(input)
+
+	local delta = input.Position - dragStart
+
+	Main.Position = UDim2.new(
+		startPosition.X.Scale,
+		startPosition.X.Offset + delta.X,
+		startPosition.Y.Scale,
+		startPosition.Y.Offset + delta.Y
+	)
+
+end
+
+TitleBar.InputBegan:Connect(function(input)
+
+	if input.UserInputType == Enum.UserInputType.MouseButton1
+		or input.UserInputType == Enum.UserInputType.Touch then
+
+		dragging = true
+
+		dragStart = input.Position
+
+		startPosition = Main.Position
+
+		input.Changed:Connect(function()
+
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+
+		end)
+
+	end
+
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+
+	if dragging and (
+		input.UserInputType == Enum.UserInputType.MouseMovement
+		or input.UserInputType == Enum.UserInputType.Touch
+	) then
+
+		updateDrag(input)
+
+	end
+
+end)
