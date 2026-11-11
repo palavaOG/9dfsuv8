@@ -1,4 +1,5 @@
 
+
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Rain-Design/Libraries/main/Shaman/Library.lua'))()
 local Flags = Library.Flags
 
@@ -53,6 +54,21 @@ end
 
 local plrteam = game.Players.LocalPlayer.Team.Name
 local plrname = game.Players.LocalPlayer.Name
+
+if not plrteam then
+    game.Players.LocalPlayer:Kick("Ensure you're fully loaded in or not in any menus before executing")
+    return
+end
+
+local tycoon = workspace.Tycoon.Tycoons:FindFirstChild(plrteam)
+
+if not tycoon or not tycoon:FindFirstChild("Essentials") 
+    or not tycoon.Essentials:FindFirstChild("CollectorParts")
+    or not tycoon.Essentials.CollectorParts:FindFirstChild("Collector") then
+
+    game.Players.LocalPlayer:Kick("Ensure you're fully loaded in or not in any menus before executing")
+    return
+end
 
 local Window = Library:Window({
     Text = "War Tycoon - " .. plrname .. " - Team " .. plrteam
@@ -444,10 +460,38 @@ baseSection:Button({
 baseSection:Button({
     Text = "Get Loadout",
     Callback = function()
-        local hrp = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            hrp.CFrame = CFrame.new(workspace.Tycoon.Tycoons[plrteam].Essentials["Spawn Visualizer"].Position + Vector3.new(0, 5, 0))
-        end
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        local hrp = character and character:FindFirstChild("HumanoidRootPart")
+
+        if not hrp then return end
+
+        local tycoon = workspace.Tycoon.Tycoons:FindFirstChild(plrteam)
+        local neon = tycoon
+            and tycoon:FindFirstChild("PurchasedObjects")
+            and tycoon.PurchasedObjects:FindFirstChild("Loadout")
+            and tycoon.PurchasedObjects.Loadout:FindFirstChild("Neon")
+
+        if not neon then return end
+
+        local prepos = hrp.CFrame
+
+        hrp.CFrame = neon.CFrame
+        task.wait(0.5)
+
+        local args = {1}
+
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Packages")
+            :WaitForChild("Knit")
+            :WaitForChild("Services")
+            :WaitForChild("LoadoutService")
+            :WaitForChild("RF")
+            :WaitForChild("EquipLoadout")
+            :InvokeServer(unpack(args))
+            
+        task.wait(0.5)
+        hrp.CFrame = prepos
     end
 })
 
